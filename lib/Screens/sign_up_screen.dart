@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rest_auth/Screens/home_screen.dart';
+import 'package:rest_auth/Services/auth_api.dart';
 
 import '../widgets/custom_text_field.dart';
 
@@ -22,6 +23,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _lastName = TextEditingController();
     _email = TextEditingController();
     _password = TextEditingController();
+    _name!.text = "Sarthak";
+    _lastName!.text = "Agarwal";
+    _email!.text = "agarwalsarthak456@gmail.com";
+    _password!.text = "Sarthak@123";
     super.initState();
   }
 
@@ -94,6 +99,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 onPressed: () {
                   print("Signup the user");
+                  if (_email!.text.isEmpty ||
+                      _name!.text.isEmpty ||
+                      _lastName!.text.isEmpty ||
+                      _password!.text.isEmpty) return;
+                  print("Called");
+                  AuthApi().createUserWithEmailAndPassword(
+                    email: _email!.text,
+                    firstname: _name!.text,
+                    lstName: _lastName!.text,
+                    password: _password!.text,
+                    context: context,
+                  );
                 },
                 child: const Padding(
                   padding:
