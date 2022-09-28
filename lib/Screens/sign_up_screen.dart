@@ -33,24 +33,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff5DA3FA),
+      backgroundColor: Colors.white,
       body: Center(
         child: Container(
-          decoration: BoxDecoration(
-            color: Colors.blueAccent.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(15.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.white,
-                blurRadius: 5.0,
-                blurStyle: BlurStyle.solid,
-                offset: Offset(0, 0),
-              ),
-            ],
-          ),
-          height: 500,
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          width: 500,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,21 +58,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 label: 'Name',
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               CustomTextField(
                 textEditingController: _lastName,
                 label: 'Last Name',
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               CustomTextField(
                 textEditingController: _email,
                 label: 'Email',
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               CustomTextField(
                 textEditingController: _password,
@@ -94,7 +80,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 isObscure: true,
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               ElevatedButton(
                 onPressed: () {
@@ -118,8 +104,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Text(
                     'Sign Up',
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w300,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
