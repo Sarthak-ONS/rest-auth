@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'app_exceptions.dart';
 
 class RequestHelper {
   Future sendPostRequest(
@@ -11,29 +14,30 @@ class RequestHelper {
     try {
       http.Response response = await http
           .post(
-            Uri.parse(url!),
-            headers: {"Content-Type": "application/json"},
-            body: jsonEncode(body),
-          )
-          .timeout(const Duration(seconds: 30));
-
-      final decodedData = jsonDecode(response.body);
-      print("The status code is ${response.statusCode}");
-
-      if (response.statusCode == 200) {
-        print(response.body);
-      } else {
-        _processResponse(response);
-      }
-    } on EmailAlreadyExistsException {
+        Uri.parse(url!),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
+      )
+          .timeout(
+        const Duration(seconds: 30),
+        onTimeout: () async {
+          return http.Response('Request Timeout', 401);
+        },
+      );
+      _processResponse(response);
+    } on EmailAlreadyExistsException catch (e) {
+      print(e);
       showErrorBox(context, "An account with this email already exists");
+    } on TimeoutException {
+      showErrorBox(context, 'Request time out, Please try again!');
     } catch (e) {
       print("Error is catched successfully!");
       print((e.toString()));
     }
   }
 
-  showErrorBox(BuildContext? context, String errorMessage) {
+  //Error dialog box
+  dynamic showErrorBox(BuildContext? context, String errorMessage) {
     showDialog(
       context: context!,
       builder: (_) => AlertDialog(
@@ -64,7 +68,8 @@ class RequestHelper {
   _processResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
-        return response.body;
+        print(response.body);
+        break;
       case 400:
         final decodedData = jsonDecode(response.body);
         if (decodedData['error']['message'] == 'EMAIL_EXISTS') {
@@ -74,26 +79,14 @@ class RequestHelper {
           throw TooManyAttemptsException(decodedData['error']['message']);
         }
         return;
+      case 401:
+        throw TimeoutException('Reqest timeout, Please try again.');
+      case 500:
+        throw IntervalServerErrorException(
+            'Server is down!, Please try after sometime');
+
       default:
         break;
     }
   }
-}
-
-class AppException implements Exception {
-  final String? message;
-  final String? prefix;
-  final String? url;
-
-  AppException([this.message, this.prefix, this.url]);
-}
-
-class EmailAlreadyExistsException extends AppException {
-  EmailAlreadyExistsException([String? message, String? url])
-      : super(message, 'Bad request', url);
-}
-
-class TooManyAttemptsException extends AppException {
-  TooManyAttemptsException([String? message, String? url])
-      : super(message, 'Bad request', url);
 }
